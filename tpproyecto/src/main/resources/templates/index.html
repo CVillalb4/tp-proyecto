@@ -17,6 +17,13 @@
         <h2>Bienvenido a Spotify</h2>
         <p>Tu espacio para escuchar y organizar música.</p>
 
+
+        <p th:if="${mensaje}" th:text="${mensaje}"></p>
+        
+        <p th:if="${error}" 
+        th:text="${error}" 
+        class="mensaje-error"></p>
+
         <section class="seccion-musica">
             <h3>Agregar una canción</h3>
 
@@ -25,14 +32,14 @@
             <form th:action="@{/canciones}"
                 th:object="${nuevaCancion}"
                 method="post"
+                enctype="multipart/form-data"
                 class="formulario-cancion">
 
                 <label for="nombre">Nombre de la canción</label>
                 <input id="nombre"
                     type="text"
                     th:field="*{nombre}"
-                    maxlength="150"
-                    required>
+                    maxlength="150" required>
 
                 <label for="artista">Artista</label>
                 <input id="artista"
@@ -47,13 +54,11 @@
                     th:field="*{album}"
                     maxlength="150">
 
-                <label for="rutaArchivo">Ruta del archivo de audio</label>
-                <input id="rutaArchivo"
-                    type="text"
-                    th:field="*{rutaArchivo}"
-                    maxlength="500"
-                    placeholder="/music/mi-cancion.mp3"
-                    required>
+                <label for="archivo">Archivo de audio MP3</label>
+                <input id="archivo"
+                 type="file" 
+                 name="archivo" 
+                 accept=".mp3,audio/mpeg" required>
 
                 <label for="duracionSegundos">Duración en segundos</label>
                 <input id="duracionSegundos"
