@@ -18,6 +18,54 @@
         <p>Tu espacio para escuchar y organizar música.</p>
 
         <section class="seccion-musica">
+            <h3>Agregar una canción</h3>
+
+            <p th:if="${mensaje}" th:text="${mensaje}"></p>
+
+            <form th:action="@{/canciones}"
+                th:object="${nuevaCancion}"
+                method="post"
+                class="formulario-cancion">
+
+                <label for="nombre">Nombre de la canción</label>
+                <input id="nombre"
+                    type="text"
+                    th:field="*{nombre}"
+                    maxlength="150"
+                    required>
+
+                <label for="artista">Artista</label>
+                <input id="artista"
+                    type="text"
+                    th:field="*{artista}"
+                    maxlength="150"
+                    required>
+
+                <label for="album">Álbum</label>
+                <input id="album"
+                    type="text"
+                    th:field="*{album}"
+                    maxlength="150">
+
+                <label for="rutaArchivo">Ruta del archivo de audio</label>
+                <input id="rutaArchivo"
+                    type="text"
+                    th:field="*{rutaArchivo}"
+                    maxlength="500"
+                    placeholder="/music/mi-cancion.mp3"
+                    required>
+
+                <label for="duracionSegundos">Duración en segundos</label>
+                <input id="duracionSegundos"
+                    type="number"
+                    th:field="*{duracionSegundos}"
+                    min="1">
+
+                <button type="submit">Guardar canción</button>
+            </form>
+        </section>
+
+        <section class="seccion-musica">
             <h3>Tu biblioteca musical</h3>
             <p>Próximamente vas a poder explorar tus canciones.</p>
         </section>
