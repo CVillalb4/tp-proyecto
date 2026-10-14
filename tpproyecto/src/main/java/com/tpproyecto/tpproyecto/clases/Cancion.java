@@ -1,8 +1,13 @@
 package com.tpproyecto.tpproyecto.clases;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "canciones")
 public class Cancion {
 
@@ -23,9 +28,6 @@ public class Cancion {
     private String rutaArchivo;
 
     private Integer duracionSegundos;
-
-    public Cancion() {
-    }
 
     public Long getId() {
         return id;
