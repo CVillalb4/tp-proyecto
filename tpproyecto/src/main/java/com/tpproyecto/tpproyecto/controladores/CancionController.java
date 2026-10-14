@@ -7,10 +7,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
+
 @Controller
+@ResponseBody
 public class CancionController {
 
     private final CancionService cancionService;
@@ -27,6 +30,15 @@ public class CancionController {
             model.addAttribute("query", query);
         }
         return "buscar";
+    }
+
+    @GetMapping("/api/canciones/buscar")
+    @ResponseBody
+    public List<Cancion> buscarApi(@RequestParam(name = "query", required = false) String query) {
+        if (query == null || query.trim().isEmpty()) {
+            return List.of();
+        }
+        return cancionService.buscarPorNombre(query.trim());
     }
 
 }
