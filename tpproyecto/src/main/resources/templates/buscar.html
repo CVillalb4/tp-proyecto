@@ -188,7 +188,8 @@
             <path d="M10.5 2a8.5 8.5 0 105.262 15.176l5.352 5.352a1 1 0 001.414-1.414l-5.352-5.352A8.5 8.5 0 0010.5 2zm-6.5 8.5a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0z"/>
         </svg>
         <input type="text" id="searchInput" name="query" class="search-input" th:value="${query}" placeholder="¿Qué quieres escuchar?" autocomplete="off" />
-        
+    
+
         <!-- Botón 'X' para limpiar que aparece si hay texto -->
         <span th:if="${query != null and !query.isEmpty()}" onclick="window.location.href='/buscar'" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #B3B3B3; font-weight: bold;">✕</span>
     </form>
