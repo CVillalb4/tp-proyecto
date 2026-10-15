@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <header th:fragment="topbar" style="position: fixed; top: 0; left: 0; right: 0; height: 60px; background-color: #070707; display: flex; align-items: center; justify-content: center; z-index: 100; padding: 0 20px;">
+        
+        <div style="position: relative; width: 100%; max-width: 450px;">
+            <form id="searchForm" action="/buscar" method="get">
+                <div style="position: relative; display: flex; align-items: center;">
+                    <!-- Icono Lupa -->
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="#B3B3B3" style="position: absolute; left: 14px;">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+
+                    <!-- Input con evento oninput para buscar en tiempo real -->
+                    <input type="text" id="searchInput" name="query" th:value="${query}" 
+                           placeholder="¿Qué querés escuchar?" 
+                           autocomplete="off"
+                           oninput="buscarEnTiempoReal()"
+                           style="width: 100%; height: 40px; border-radius: 50px; border: none; background-color: #242424; color: #fff; padding: 0 40px; font-size: 0.9rem; outline: none;">
+
+                    <!-- Botón Limpiar (X) -->
+                   <span id="clearBtn" onclick="limpiarBuscador()" 
+      style="display: none; position: absolute; right: 14px; color: #B3B3B3; font-size: 1.1rem; cursor: pointer; user-select: none;">✕</span>
+                </div>
+            </form>
+
+            <!-- DROPDOWN FLOTANTE DINÁMICO -->
+            <div id="resultsDropdown" style="display: none; position: absolute; top: 48px; left: 0; right: 0; background-color: #181818; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.7); overflow: hidden; z-index: 200;">
+                <!-- JavaScript va a rellenar las canciones acá dinámicamente -->
+            </div>
+        </div>
+
+        <script>
+            let timeoutId;
+
+            function buscarEnTiempoReal() {
+                const query = document.getElementById('searchInput').value.trim();
+                const dropdown = document.getElementById('resultsDropdown');
+                const clearBtn = document.getElementById('clearBtn');
+
+                // Mostrar u ocultar la 'X'
+                clearBtn.style.display = query.length > 0 ? 'block' : 'none';
+
+                if (query.length === 0) {
+                    dropdown.style.display = 'none';
+                    dropdown.innerHTML = '';
+                    return;
+                }
+
+
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    fetch('/api/canciones/buscar?query=' + encodeURIComponent(query))
+                        .then(response => response.json())
+                        .then(canciones => {
+                            dropdown.innerHTML = '';
+
+                            if (canciones.length === 0) {
+                                dropdown.innerHTML = `<div style="padding: 14px; color: #B3B3B3; font-size: 0.85rem;">No se encontraron resultados</div>`;
+                            } else {
+                                canciones.forEach(cancion => {
+                                    const item = document.createElement('div');
+                                    item.style.cssText = 'display: flex; align-items: center; padding: 10px 14px; cursor: pointer; border-bottom: 1px solid #242424; transition: background 0.2s;';
+                                    item.onmouseover = () => item.style.backgroundColor = '#282828';
+                                    item.onmouseout = () => item.style.backgroundColor = 'transparent';
+                                    
+                                    item.innerHTML = `
+                                        <div style="width: 32px; height: 32px; background-color: #282828; border-radius: 4px; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#B3B3B3">
+                                                <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                                            </svg>
+                                        </div>
+                                        <div style="display: flex; flex-direction: column;">
+                                            <span style="color: #fff; font-size: 0.9rem; font-weight: 500;">${cancion.nombre}</span>
+                                            <span style="color: #B3B3B3; font-size: 0.75rem;">${cancion.artista}</span>
+                                        </div>
+                                    `;
+                                    dropdown.appendChild(item);
+                                });
+                            }
+                            dropdown.style.display = 'block';
+                        });
+                }, 200);
+            }
+
+            function limpiarBuscador() {
+    const input = document.getElementById('searchInput');
+    const dropdown = document.getElementById('resultsDropdown');
+    const clearBtn = document.getElementById('clearBtn');
+
+    input.value = '';
+    dropdown.style.display = 'none';
+    dropdown.innerHTML = '';
+    clearBtn.style.display = 'none';
+    input.focus(); // Devuelve el foco al campo para seguir escribiendo si se desea
+}
+
+            // Ocultar dropdown si se hace clic fuera del buscador
+            document.addEventListener('click', function(e) {
+                const searchBox = document.getElementById('searchForm');
+                const dropdown = document.getElementById('resultsDropdown');
+                if (searchBox && !searchBox.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+        </script>
+    </header>
+
+</body>
+</html>
