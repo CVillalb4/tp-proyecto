@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const barra = document.getElementById("barra-progreso");
     const tiempoActual = document.getElementById("tiempo-actual");
     const duracionTotal = document.getElementById("duracion-total");
+    const iconoReproducir = document.getElementById("icono-reproducir");
 
     const botonesCanciones = [
         ...document.querySelectorAll(".seleccionar-cancion")
@@ -55,9 +56,9 @@ document.addEventListener("DOMContentLoaded", () => {
         duracionTotal.textContent = "0:00";
 
         audio.play().then(() => {
-            botonReproducir.textContent = "⏸ Pausar";
+            actualizarBotonReproducir();
         }).catch(() => {
-            botonReproducir.textContent = "▶ Reproducir";
+            actualizarBotonReproducir();
         });
     }
 
@@ -71,13 +72,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (audio.paused) {
             audio.play().then(() => {
-                botonReproducir.textContent = "⏸ Pausar";
+                actualizarBotonReproducir();
             }).catch(() => {
-                botonReproducir.textContent = "▶ Reproducir";
+                actualizarBotonReproducir();
             });
         } else {
             audio.pause();
-            botonReproducir.textContent = "▶ Reproducir";
+            actualizarBotonReproducir();
         }
     });
 
@@ -137,16 +138,16 @@ document.addEventListener("DOMContentLoaded", () => {
         if (indiceActual < botonesCanciones.length - 1) {
             seleccionarCancion(indiceActual + 1);
         } else {
-            botonReproducir.textContent = "▶ Reproducir";
+            actualizarBotonReproducir();
         }
     });
 
     audio.addEventListener("pause", () => {
-        botonReproducir.textContent = "▶ Reproducir";
+        actualizarBotonReproducir();
     });
 
     audio.addEventListener("play", () => {
-        botonReproducir.textContent = "⏸ Pausar";
+        actualizarBotonReproducir();
     });
 
     botonesCanciones.forEach((boton, indice) => {
@@ -154,4 +155,20 @@ document.addEventListener("DOMContentLoaded", () => {
             seleccionarCancion(indice);
         });
     });
+
+
+    function actualizarBotonReproducir() {
+    if (audio.paused) {
+        iconoReproducir.innerHTML =
+            '<path d="M8 5v14l11-7z" fill="currentColor"/>';
+        botonReproducir.setAttribute("aria-label", "Reproducir");
+        botonReproducir.title = "Reproducir";
+    } else {
+        iconoReproducir.innerHTML =
+            '<path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="currentColor"/>';
+        botonReproducir.setAttribute("aria-label", "Pausar");
+        botonReproducir.title = "Pausar";
+    }
+}
+
 });
