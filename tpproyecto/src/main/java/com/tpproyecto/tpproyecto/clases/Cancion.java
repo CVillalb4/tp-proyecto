@@ -30,4 +30,5 @@ public class Cancion {
     @Column(nullable = false)
     private int duracionSegundos;
 
+    
 }

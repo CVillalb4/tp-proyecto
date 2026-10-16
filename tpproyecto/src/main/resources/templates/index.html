@@ -9,10 +9,7 @@
 </head>
 <body>
     <div th:replace="~{topbar :: topbar}"></div>
-    <header class="encabezado">
-        <h1>♫ Spotify</h1>
-        <p>Tu música, a tu manera.</p>
-    </header>
+    
 
     <main class="contenido">
         <h2>Bienvenido a Spotify</h2>
@@ -72,7 +69,7 @@
         </section>
 
 
-        <section class="seccion-musica">
+        <section class="seccion-musica" id="biblioteca">
             <h3>Tu biblioteca musical</h3>
                 
             <p th:if="${#lists.isEmpty(canciones)}">
@@ -80,8 +77,8 @@
             </p>
                 
             <div class="lista-canciones" th:unless="${#lists.isEmpty(canciones)}">
-                 <article class="cancion" th:each="cancion : ${canciones}">
-                     <div class="datos-cancion">
+                <article class="cancion" th:each="cancion : ${canciones}">
+                    <div class="datos-cancion">
                         <h4 th:text="${cancion.nombre}">Nombre de la canción</h4>
                         <p th:text="${cancion.artista}">Artista</p>
                         <p th:if="${cancion.album != null and !cancion.album.isEmpty()}" th:text="${cancion.album}">Álbum</p>
@@ -91,6 +88,19 @@
                          th:data-artista="${cancion.artista}" th:data-audio="${cancion.rutaArchivo}">
                          ▶ Reproducir
                     </button>
+
+                    <form th:action="@{/favoritos}" method="post">
+                        <input type="hidden"
+                                name="cancionId"
+                                th:value="${cancion.id}">
+
+                        <button type="submit"
+                                class="boton-favorito"
+                                th:text="${favoritosIds.contains(cancion.id)} ? '♥' : '♡'"
+                                th:attr="aria-label=${favoritosIds.contains(cancion.id)} ? 'Quitar de favoritos' : 'Agregar a favoritos'"
+                                th:title="${favoritosIds.contains(cancion.id)} ? 'Quitar de favoritos' : 'Agregar a favoritos'">
+                        </button>
+                    </form>
                 </article>
             </div>
         </section>
@@ -98,26 +108,55 @@
 
         
         <section class="reproductor">
-            <h2>Reproductor</h2>
+            
 
-            <p id="cancion-actual">Seleccioná una canción</p>
+            <p id="cancion-actual"></p>
 
             <audio id="audio" preload="metadata"></audio>
 
             <div class="controles-reproductor">
-                <button type="button" id="anterior">⏮ Anterior</button>
-                <button type="button" id="reproducir">▶ Reproducir</button>
-                <button type="button" id="siguiente">Siguiente ⏭</button>
+                <button type="button" id="anterior" aria-label="Anterior" title="Anterior">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6 5h2v14H6zM19 5v14L9 12z" fill="currentColor" />
+                    </svg>
+                </button>
+            
+                <button type="button" id="reproducir" aria-label="Reproducir" title="Reproducir">
+                    <svg id="icono-reproducir" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M8 5v14l11-7z" fill="currentColor" />
+                    </svg>
+                </button>
+            
+                <button type="button" id="siguiente" aria-label="Siguiente" title="Siguiente">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M16 5h2v14h-2zM5 5v14l10-7z" fill="currentColor" />
+                    </svg>
+                </button>
+
+                <div class="control-volumen">
+                    <button type="button" id="boton-volumen" aria-label="Silenciar" title="Silenciar">
+                        <svg id="icono-volumen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                            <path d="M15.5 8.5a5 5 0 0 1 0 7"></path>
+                            <path d="M19 5a10 10 0 0 1 0 14"></path>
+                        </svg>
+                    </button>
+                
+                    <input type="range" id="barra-volumen" min="0" max="100" value="70" step="1" aria-label="Volumen">
+                </div>
+
             </div>
 
             <div class="progreso-reproductor">
                 <span id="tiempo-actual">0:00</span>
-
+            
                 <input type="range" id="barra-progreso" min="0" max="100" value="0" step="0.1"
                     aria-label="Posición de reproducción">
-
+            
                 <span id="duracion-total">0:00</span>
             </div>
+
         </section>
 
 
