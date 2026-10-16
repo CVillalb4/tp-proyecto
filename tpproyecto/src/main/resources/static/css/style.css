@@ -403,24 +403,32 @@ input:focus-visible {
    ========================= */
 
 .reproductor {
-    margin-top: 32px;
-    padding: 28px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 90;
+
+    margin-top: 0;
+    padding: 10px 24px;
     border: 1px solid #303030;
-    border-radius: 16px;
+    border-radius: 12px 12px 0 0;
     background: linear-gradient(145deg, #202820, #181818 65%);
     text-align: center;
 }
 
 .reproductor h2 {
-    margin-bottom: 12px;
-    font-size: 1.35rem;
+    margin: 0 0 4px;
+    font-size: 1rem;
 }
 
 #cancion-actual {
-    min-height: 24px;
-    margin-bottom: 20px;
+    min-height: 0;
+    margin: 0 0 6px;
     color: var(--texto-secundario);
+    font-size: 0.85rem;
     overflow-wrap: anywhere;
+    font-size: 1.1rem;
 }
 
 #audio {
@@ -431,7 +439,6 @@ input:focus-visible {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
     gap: 14px;
 }
 
@@ -441,9 +448,9 @@ input:focus-visible {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 46px;
-    height: 46px;
-    padding: 10px;
+    width: 34px;
+    height: 34px;
+    padding: 7px;
     border: none;
     border-radius: 50%;
     background: transparent;
@@ -459,20 +466,20 @@ input:focus-visible {
 
 .controles-reproductor button svg {
     display: block;
-    width: 23px;
-    height: 23px;
+    width: 18px;
+    height: 18px;
 }
 
 #reproducir {
-    width: 54px;
-    height: 54px;
+    width: 40px;
+    height: 40px;
     background: #1ed760;
     color: #101010;
 }
 
 #reproducir svg {
-    width: 27px;
-    height: 27px;
+    width: 21px;
+    height: 21px;
 }
 
 #reproducir:hover {
@@ -486,16 +493,16 @@ input:focus-visible {
 .progreso-reproductor {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
     max-width: 700px;
-    margin: 22px auto 0;
+    margin: 8px auto 0;
 }
 
 .progreso-reproductor span {
-    min-width: 40px;
+    min-width: 35px;
     color: var(--texto-secundario);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-variant-numeric: tabular-nums;
     text-align: center;
 }
@@ -503,7 +510,7 @@ input:focus-visible {
 #barra-progreso {
     flex: 1;
     min-width: 0;
-    height: 5px;
+    height: 4px;
     accent-color: var(--verde);
     cursor: pointer;
 }
@@ -608,4 +615,8 @@ input:focus-visible {
     #reproducir {
         min-width: 125px;
     }
+}
+
+.contenido {
+    padding-bottom: 140px;
 }
