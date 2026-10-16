@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<header th:fragment="topbar" class="barra-superior">
+
+    <a class="marca" th:href="@{/}">Spotify</a>
+
+    <nav class="navegacion-superior" aria-label="Navegación principal">
+        <a class="enlace-navegacion" th:href="@{/}">Inicio</a>
+        <a class="enlace-navegacion" th:href="@{/#biblioteca}">Biblioteca</a>
+    </nav>
+
+    <div class="contenedor-buscador">
+        <form id="searchForm" th:action="@{/buscar}" method="get"
+              class="formulario-busqueda">
+
+            <svg class="icono-busqueda" width="18" height="18"
+                 viewBox="0 0 24 24" fill="#B3B3B3" aria-hidden="true">
+                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5
+                16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16
+                9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5
+                4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99
+                5 9.5S7.01 5 9.5 5 14 7.01 14 9.5
+                11.99 14 9.5 14z"/>
+            </svg>
+
+            <input type="text"
+                   id="searchInput"
+                   name="query"
+                   th:value="${query}"
+                   placeholder="¿Qué querés escuchar?"
+                   autocomplete="off"
+                   oninput="buscarEnTiempoReal()"
+                   class="campo-busqueda"
+                   aria-label="Buscar canciones">
+
+            <button type="button"
+                    id="clearBtn"
+                    onclick="limpiarBuscador()"
+                    class="boton-limpiar-busqueda"
+                    aria-label="Limpiar búsqueda">✕</button>
+        </form>
+
+        <div id="resultsDropdown"
+             class="resultados-busqueda">
+        </div>
+    </div>
+
+    <script>
+        let timeoutId;
+
+        function buscarEnTiempoReal() {
+            const query = document.getElementById('searchInput').value.trim();
+            const dropdown = document.getElementById('resultsDropdown');
+            const clearBtn = document.getElementById('clearBtn');
+
+            clearBtn.style.display = query.length > 0 ? 'block' : 'none';
+
+            if (query.length === 0) {
+                dropdown.style.display = 'none';
+                dropdown.innerHTML = '';
+                return;
+            }
+
+            clearTimeout(timeoutId);
+
+            timeoutId = setTimeout(() => {
+                fetch('/api/canciones/buscar?query=' + encodeURIComponent(query))
+                    .then(response => response.json())
+                    .then(canciones => {
+                        dropdown.innerHTML = '';
+
+                        if (canciones.length === 0) {
+                            dropdown.innerHTML =
+                                '<div style="padding:14px;color:#B3B3B3;font-size:0.85rem;">No se encontraron resultados</div>';
+                        } else {
+                            canciones.forEach(cancion => {
+                                const item = document.createElement('div');
+
+                                item.style.cssText =
+                                    'display:flex;align-items:center;padding:10px 14px;cursor:pointer;border-bottom:1px solid #242424;transition:background 0.2s;';
+
+                                item.onmouseover = () =>
+                                    item.style.backgroundColor = '#282828';
+
+                                item.onmouseout = () =>
+                                    item.style.backgroundColor = 'transparent';
+
+                                const datos = document.createElement('div');
+                                datos.style.cssText =
+                                    'display:flex;flex-direction:column;min-width:0;';
+
+                                const nombre = document.createElement('span');
+                                nombre.textContent = cancion.nombre;
+                                nombre.style.cssText =
+                                    'color:#fff;font-size:0.9rem;font-weight:500;';
+
+                                const artista = document.createElement('span');
+                                artista.textContent = cancion.artista || '';
+                                artista.style.cssText =
+                                    'color:#B3B3B3;font-size:0.75rem;';
+
+                                datos.appendChild(nombre);
+                                datos.appendChild(artista);
+                                item.appendChild(datos);
+                                dropdown.appendChild(item);
+                            });
+                        }
+
+                        dropdown.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Error al buscar canciones:', error);
+                        dropdown.style.display = 'none';
+                    });
+            }, 200);
+        }
+
+        function limpiarBuscador() {
+            const input = document.getElementById('searchInput');
+            const dropdown = document.getElementById('resultsDropdown');
+            const clearBtn = document.getElementById('clearBtn');
+
+            input.value = '';
+            dropdown.style.display = 'none';
+            dropdown.innerHTML = '';
+            clearBtn.style.display = 'none';
+            input.focus();
+        }
+
+        document.addEventListener('click', function(e) {
+            const searchBox = document.getElementById('searchForm');
+            const dropdown = document.getElementById('resultsDropdown');
+
+            if (searchBox && !searchBox.contains(e.target)) {
+                dropdown.style.display = 'none';
+            }
+        });
+    </script>
+
+</header>
+
+</body>
+</html>

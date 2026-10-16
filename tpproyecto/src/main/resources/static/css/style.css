@@ -1,82 +1,705 @@
 
+
 * {
     box-sizing: border-box;
 }
 
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #121212;
-    color: #ffffff;
+:root {
+    --fondo: #121212;
+    --panel: #181818;
+    --panel-secundario: #202020;
+    --panel-hover: #282828;
+    --borde: #303030;
+    --texto: #ffffff;
+    --texto-secundario: #b3b3b3;
+    --verde: #1ed760;
+    --verde-hover: #1fef69;
 }
 
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 85px;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--fondo);
+    color: var(--texto);
+    line-height: 1.5;
+}
+
+h1, h2, h3, h4, p {
+    margin-top: 0;
+}
+
+h2, h3 {
+    letter-spacing: -0.3px;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+button {
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--verde);
+    outline-offset: 3px;
+}
+
+/* =========================
+   BARRA SUPERIOR
+   ========================= */
+
+.barra-superior {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 12px 32px;
+    background: rgba(10, 10, 10, 0.97);
+    border-bottom: 1px solid var(--borde);
+}
+
+.marca {
+    flex-shrink: 0;
+    color: var(--verde);
+    font-size: 1.35rem;
+    font-weight: 800;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+}
+
+.navegacion-superior {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.enlace-navegacion {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 15px;
+    border-radius: 24px;
+    color: var(--texto-secundario);
+    background: transparent;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.enlace-navegacion:hover {
+    color: var(--texto);
+    background: var(--panel-hover);
+}
+
+.contenedor-buscador {
+    position: relative;
+    width: 100%;
+    max-width: 450px;
+    margin-left: auto;
+}
+
+.formulario-busqueda {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.icono-busqueda {
+    position: absolute;
+    left: 14px;
+    pointer-events: none;
+}
+
+.campo-busqueda {
+    width: 100%;
+    height: 44px;
+    padding: 0 42px;
+    border: 1px solid transparent;
+    border-radius: 24px;
+    background: #242424;
+    color: var(--texto);
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.campo-busqueda:hover {
+    background: #2a2a2a;
+}
+
+.campo-busqueda:focus {
+    border-color: #777;
+    background: #2a2a2a;
+}
+
+.boton-limpiar-busqueda {
+    display: none;
+    position: absolute;
+    right: 14px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--texto-secundario);
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+.boton-limpiar-busqueda:hover {
+    color: var(--texto);
+}
+
+.resultados-busqueda {
+    display: none;
+    position: absolute;
+    top: 52px;
+    left: 0;
+    right: 0;
+    max-height: 360px;
+    overflow-y: auto;
+    border: 1px solid var(--borde);
+    border-radius: 12px;
+    background: var(--panel);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+    z-index: 200;
+}
+
+/* Deja espacio para la barra fija */
+
 .encabezado {
-    padding: 24px 40px;
-    background-color: #181818;
-    border-bottom: 1px solid #303030;
+    margin-top: 72px;
+    padding: 32px 40px;
+    background: linear-gradient(120deg, #202820, #181818 65%);
+    border-bottom: 1px solid var(--borde);
 }
 
 .encabezado h1 {
-    margin: 0;
-    color: #1ed760;
+    margin-bottom: 6px;
+    color: var(--verde);
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    letter-spacing: -1px;
 }
 
 .encabezado p {
-    color: #b3b3b3;
+    margin-bottom: 0;
+    color: var(--texto-secundario);
 }
 
+/* =========================
+   CONTENIDO Y SECCIONES
+   ========================= */
+
 .contenido {
-    max-width: 1000px;
-    margin: 40px auto;
-    padding: 0 24px;
+    width: min(1200px, 100%);
+    margin: 100px auto 56px;
+    padding: 0 28px;
+}
+
+.contenido > h2 {
+    margin-bottom: 8px;
+    font-size: 1.8rem;
+}
+
+.contenido > p {
+    color: var(--texto-secundario);
 }
 
 .seccion-musica {
-    margin-top: 32px;
-    padding: 24px;
-    background-color: #202020;
-    border-radius: 12px;
+    margin-top: 28px;
+    padding: 28px;
+    border: 1px solid #292929;
+    border-radius: 16px;
+    background: var(--panel);
 }
 
-.pie {
-    padding: 24px;
-    color: #b3b3b3;
-    text-align: center;
+.seccion-musica h3 {
+    margin-bottom: 20px;
+    font-size: 1.3rem;
 }
 
+.seccion-musica > p {
+    color: var(--texto-secundario);
+}
+
+.mensaje-error {
+    padding: 12px 16px;
+    border: 1px solid #793939;
+    border-radius: 8px;
+    background: #351d1d;
+    color: #ffb4b4;
+}
+
+/* =========================
+   FORMULARIO DE CANCIONES
+   ========================= */
 
 .formulario-cancion {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    max-width: 500px;
+    width: 100%;
+    max-width: 560px;
 }
 
 .formulario-cancion label {
-    color: #b3b3b3;
     margin-top: 8px;
+    color: #dedede;
+    font-size: 0.9rem;
+    font-weight: 600;
 }
 
 .formulario-cancion input {
-    padding: 12px;
+    width: 100%;
+    min-height: 44px;
+    padding: 11px 13px;
     border: 1px solid #454545;
+    border-radius: 8px;
+    background: #292929;
+    color: var(--texto);
+    font-size: 0.95rem;
+}
+
+.formulario-cancion input:hover {
+    border-color: #686868;
+}
+
+.formulario-cancion input:focus {
+    border-color: var(--verde);
+    outline: none;
+}
+
+.formulario-cancion input[type="file"] {
+    padding: 8px;
+}
+
+.formulario-cancion input[type="file"]::file-selector-button {
+    margin-right: 12px;
+    padding: 7px 12px;
+    border: none;
     border-radius: 6px;
-    background-color: #303030;
-    color: white;
-    font-size: 15px;
+    background: #3a3a3a;
+    color: var(--texto);
+    cursor: pointer;
+}
+
+.formulario-cancion input[type="file"]::file-selector-button:hover {
+    background: #4a4a4a;
 }
 
 .formulario-cancion button {
-    margin-top: 12px;
-    padding: 12px;
+    min-height: 46px;
+    margin-top: 14px;
+    padding: 12px 22px;
     border: none;
     border-radius: 24px;
-    background-color: #1ed760;
-    color: #121212;
-    font-weight: bold;
+    background: var(--verde);
+    color: #101010;
+    font-weight: 700;
     cursor: pointer;
 }
 
 .formulario-cancion button:hover {
-    background-color: #1fef69;
+    background: var(--verde-hover);
+    transform: scale(1.01);
+}
+
+/* =========================
+   BIBLIOTECA MUSICAL
+   ========================= */
+
+.lista-canciones {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.cancion {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    min-width: 0;
+    padding: 18px;
+    border: 1px solid #303030;
+    border-radius: 12px;
+    background: #242424;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.cancion:hover {
+    background: #2c2c2c;
+    transform: translateY(-2px);
+}
+
+.datos-cancion {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.datos-cancion h4 {
+    margin-bottom: 6px;
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+.datos-cancion p {
+    margin-bottom: 4px;
+    color: var(--texto-secundario);
+    font-size: 0.9rem;
+}
+
+.seleccionar-cancion {
+    min-height: 40px;
+    padding: 9px 16px;
+    border: none;
+    border-radius: 24px;
+    background: var(--verde);
+    color: #101010;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.seleccionar-cancion:hover {
+    background: var(--verde-hover);
+}
+
+.cancion form {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.boton-favorito {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #454545;
+    border-radius: 50%;
+    background: #303030;
+    color: var(--verde);
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+
+.boton-favorito:hover {
+    background: #3a3a3a;
+    transform: scale(1.06);
+}
+
+/* =========================
+   REPRODUCTOR
+   ========================= */
+
+.reproductor {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 90;
+
+    margin-top: 0;
+    padding: 10px 24px;
+    border: 1px solid #303030;
+    border-radius: 12px 12px 0 0;
+    background: linear-gradient(145deg, #202820, #181818 65%);
+    text-align: center;
+}
+
+.reproductor h2 {
+    margin: 0 0 4px;
+    font-size: 1rem;
+}
+
+#cancion-actual {
+    min-height: 0;
+    margin: 0 0 6px;
+    color: var(--texto-secundario);
+    font-size: 0.85rem;
+    overflow-wrap: anywhere;
+    font-size: 1.1rem;
+}
+
+#audio {
+    display: none;
+}
+
+.controles-reproductor {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    position: relative;
+}
+
+
+
+.controles-reproductor button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    padding: 7px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #b3b3b3;
+    cursor: pointer;
+}
+
+.controles-reproductor button:hover {
+    color: #ffffff;
+    background: #303030;
+    transform: scale(1.06);
+}
+
+.controles-reproductor button svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+}
+
+#reproducir {
+    width: 40px;
+    height: 40px;
+    background: #1ed760;
+    color: #101010;
+}
+
+#reproducir svg {
+    width: 21px;
+    height: 21px;
+}
+
+#reproducir:hover {
+    background: #1fef69;
+    transform: scale(1.07);
+}
+
+
+
+
+.progreso-reproductor {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 700px;
+    margin: 8px auto 0;
+}
+
+.progreso-reproductor span {
+    min-width: 35px;
+    color: var(--texto-secundario);
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+}
+
+#barra-progreso {
+    flex: 1;
+    min-width: 0;
+    height: 4px;
+    accent-color: var(--verde);
+    cursor: pointer;
+}
+
+/* =========================
+   PIE DE PÁGINA
+   ========================= */
+
+.pie {
+    padding: 24px;
+    border-top: 1px solid #252525;
+    color: var(--texto-secundario);
+    text-align: center;
+    font-size: 0.85rem;
+}
+
+.pie p {
+    margin-bottom: 0;
+}
+
+/* =========================
+   DISEÑO RESPONSIVE
+   ========================= */
+
+@media (max-width: 800px) {
+    .barra-superior {
+        flex-wrap: wrap;
+        gap: 8px 16px;
+        padding: 12px 18px;
+    }
+
+    .contenedor-buscador {
+        order: 3;
+        flex-basis: 100%;
+        max-width: none;
+    }
+
+    .encabezado {
+        margin-top: 124px;
+        padding: 26px 22px;
+    }
+
+    .contenido {
+        margin-top: 145px;
+        padding: 0 18px;
+    }
+
+    .seccion-musica,
+    .reproductor {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .barra-superior {
+        padding: 10px 14px;
+    }
+
+    .marca {
+        font-size: 1.15rem;
+    }
+
+    .navegacion-superior {
+        gap: 2px;
+    }
+
+    .enlace-navegacion {
+        min-height: 36px;
+        padding: 0 9px;
+        font-size: 0.8rem;
+    }
+
+    .encabezado {
+        margin-top: 120px;
+        padding: 22px 18px;
+    }
+
+    .contenido {
+        margin-top: 140px;
+        padding: 0 12px;
+    }
+
+    .seccion-musica,
+    .reproductor {
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .lista-canciones {
+        grid-template-columns: 1fr;
+    }
+
+    .controles-reproductor {
+        gap: 8px;
+    }
+
+    .controles-reproductor button {
+        padding: 9px 12px;
+        font-size: 0.85rem;
+    }
+
+    #reproducir {
+        min-width: 125px;
+    }
+}
+
+.contenido {
+    padding-bottom: 140px;
+}
+
+/* Control de volumen, a la derecha */
+.control-volumen {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    width: 135px;
+    margin-left: 0;
+    position: absolute;
+    right: 200px;
+    top: 75%;
+    transform: translateY(-50%);
+}
+
+#boton-volumen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 30px;
+    height: 34px;
+    padding: 5px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #b3b3b3;
+    cursor: pointer;
+}
+
+#boton-volumen:hover {
+    color: #ffffff;
+    background: #303030;
+}
+
+#icono-volumen {
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+#barra-volumen {
+    flex: 1;
+    min-width: 0;
+    height: 4px;
+    accent-color: var(--verde);
+    cursor: pointer;
+}
+
+/* Barras de progreso y volumen */
+#barra-progreso,
+#barra-volumen {
+    accent-color: #1ed760;
+    appearance: none;
+    -webkit-appearance: none;
+    height: 5px;
+    border-radius: 5px;
+    background: #4a4a4a;
+    cursor: pointer;
+}
+
+/* cambio de color para la barra de progreso y volumen */
+#barra-progreso::-webkit-slider-thumb,
+#barra-volumen::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #1ed760;
+    border: none;
+}
+
+
+#barra-progreso::-moz-range-thumb,
+#barra-volumen::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #1ed760;
+    border: none;
 }

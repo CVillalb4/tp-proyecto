@@ -35,7 +35,10 @@ public class CancionService {
     }
 
     public List<Cancion> buscarPorNombre(String nombre) {
-        return cancionRepository.findByNombreContainingIgnoreCase(nombre);
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return List.of();
+        }
+        return cancionRepository.findByNombreContainingIgnoreCase(nombre.trim());
     }
 
     private final Path carpetaMusica =
