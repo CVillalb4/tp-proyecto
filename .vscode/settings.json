@@ -1,0 +1,12 @@
+{
+    "java.jdt.ls.java.home": "E:/Program Files/Eclipse Adoptium/jdk-21.0.12.101-hotspot",
+  "maven.terminal.customEnv": {
+    "JAVA_HOME": "E:/Program Files/Eclipse Adoptium/jdk-21.0.12.101-hotspot",
+    "PATH": "E:\\Program Files\\Eclipse Adoptium\\jdk-21.0.12.101-hotspot\\bin;${env:PATH}",
+    "DB_USERNAME": "root",
+    "DB_PASSWORD": "root"
+},
+"java.configuration.updateBuildConfiguration": "interactive",
+"java.compile.nullAnalysis.mode": "disabled"
+
+}

@@ -7,7 +7,6 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "canciones")
 public class Cancion {
 
@@ -29,5 +28,13 @@ public class Cancion {
 
     @Column(nullable = false)
     private int duracionSegundos;
+
+    public Cancion(String nombre, String artista, String album, String rutaArchivo, int duracionSegundos) {
+        this.nombre = nombre;
+        this.artista = artista;
+        this.album = album;
+        this.rutaArchivo = rutaArchivo;
+        this.duracionSegundos = duracionSegundos;
+    }
 
 }
