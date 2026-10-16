@@ -440,6 +440,7 @@ input:focus-visible {
     align-items: center;
     justify-content: center;
     gap: 14px;
+    position: relative;
 }
 
 
@@ -619,4 +620,86 @@ input:focus-visible {
 
 .contenido {
     padding-bottom: 140px;
+}
+
+/* Control de volumen, a la derecha */
+.control-volumen {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    width: 135px;
+    margin-left: 0;
+    position: absolute;
+    right: 200px;
+    top: 75%;
+    transform: translateY(-50%);
+}
+
+#boton-volumen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 30px;
+    height: 34px;
+    padding: 5px;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: #b3b3b3;
+    cursor: pointer;
+}
+
+#boton-volumen:hover {
+    color: #ffffff;
+    background: #303030;
+}
+
+#icono-volumen {
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+#barra-volumen {
+    flex: 1;
+    min-width: 0;
+    height: 4px;
+    accent-color: var(--verde);
+    cursor: pointer;
+}
+
+/* Barras de progreso y volumen */
+#barra-progreso,
+#barra-volumen {
+    accent-color: #1ed760;
+    appearance: none;
+    -webkit-appearance: none;
+    height: 5px;
+    border-radius: 5px;
+    background: #4a4a4a;
+    cursor: pointer;
+}
+
+/* cambio de color para la barra de progreso y volumen */
+#barra-progreso::-webkit-slider-thumb,
+#barra-volumen::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #1ed760;
+    border: none;
+}
+
+
+#barra-progreso::-moz-range-thumb,
+#barra-volumen::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #1ed760;
+    border: none;
 }

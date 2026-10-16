@@ -1,6 +1,16 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     const audio = document.getElementById("audio");
+
+    const botonVolumen = document.getElementById('boton-volumen');
+    const iconoVolumen = document.getElementById('icono-volumen');
+    const barraVolumen = document.getElementById('barra-volumen');
+
+    let ultimoVolumen = 0.7;
+
+    audio.volume = 0.7;
+    barraVolumen.value = 70;
+
     const nombreActual = document.getElementById("cancion-actual");
     const botonReproducir = document.getElementById("reproducir");
     const botonAnterior = document.getElementById("anterior");
@@ -158,17 +168,83 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     function actualizarBotonReproducir() {
-    if (audio.paused) {
-        iconoReproducir.innerHTML =
-            '<path d="M8 5v14l11-7z" fill="currentColor"/>';
-        botonReproducir.setAttribute("aria-label", "Reproducir");
-        botonReproducir.title = "Reproducir";
-    } else {
-        iconoReproducir.innerHTML =
-            '<path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="currentColor"/>';
-        botonReproducir.setAttribute("aria-label", "Pausar");
-        botonReproducir.title = "Pausar";
+        if (audio.paused) {
+            iconoReproducir.innerHTML =
+                '<path d="M8 5v14l11-7z" fill="currentColor"/>';
+            botonReproducir.setAttribute("aria-label", "Reproducir");
+            botonReproducir.title = "Reproducir";
+        } else {
+            iconoReproducir.innerHTML =
+                '<path d="M6 5h4v14H6zM14 5h4v14h-4z" fill="currentColor"/>';
+            botonReproducir.setAttribute("aria-label", "Pausar");
+            botonReproducir.title = "Pausar";
+        }
     }
-}
+
+    function actualizarIconoVolumen() {
+        if (audio.muted || audio.volume === 0) {
+            iconoVolumen.innerHTML = `
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <line x1="23" y1="9" x2="17" y2="15"></line>
+            <line x1="17" y1="9" x2="23" y2="15"></line>
+        `;
+            botonVolumen.title = 'Activar sonido';
+            botonVolumen.setAttribute('aria-label', 'Activar sonido');
+        } else if (audio.volume < 0.5) {
+            iconoVolumen.innerHTML = `
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.5 8.5a5 5 0 0 1 0 7"></path>
+        `;
+            botonVolumen.title = 'Silenciar';
+            botonVolumen.setAttribute('aria-label', 'Silenciar');
+        } else {
+            iconoVolumen.innerHTML = `
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.5 8.5a5 5 0 0 1 0 7"></path>
+            <path d="M19 5a10 10 0 0 1 0 14"></path>
+        `;
+            botonVolumen.title = 'Silenciar';
+            botonVolumen.setAttribute('aria-label', 'Silenciar');
+        }
+    }
+
+    // Cambiar el volumen arrastrando o haciendo clic en la barra.
+    barraVolumen.addEventListener('input', () => {
+        const volumen = Number(barraVolumen.value) / 100;
+
+        audio.volume = volumen;
+        audio.muted = volumen === 0;
+
+        if (volumen > 0) {
+            ultimoVolumen = volumen;
+        }
+
+        actualizarIconoVolumen();
+    });
+
+    // Silenciar o recuperar el volumen con el icono.
+    botonVolumen.addEventListener('click', () => {
+        if (audio.muted || audio.volume === 0) {
+            audio.muted = false;
+            audio.volume = ultimoVolumen > 0 ? ultimoVolumen : 0.7;
+            barraVolumen.value = audio.volume * 100;
+        } else {
+            ultimoVolumen = audio.volume;
+            audio.muted = true;
+        }
+
+        actualizarIconoVolumen();
+    });
+
+    // Mantener sincronizados el icono y la barra.
+    audio.addEventListener('volumechange', () => {
+        if (!audio.muted) {
+            barraVolumen.value = audio.volume * 100;
+        }
+
+        actualizarIconoVolumen();
+    });
+
+    actualizarIconoVolumen();
 
 });
