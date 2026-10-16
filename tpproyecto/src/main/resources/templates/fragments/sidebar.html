@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <aside th:fragment="sidebar" style="width: 240px; background-color: #121212; height: 100vh; position: fixed; left: 0; top: 0; padding: 20px 12px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px;">
+        
+        <!-- Logo / Título -->
+        <div style="color: #fff; font-weight: bold; font-size: 1.2rem; padding-left: 8px;">
+            🎵 MiApp
+        </div>
+
+        <!-- Botón para Crear Playlist -->
+        <button onclick="crearNuevaPlaylist()" 
+                style="display: flex; align-items: center; gap: 10px; background-color: #242424; color: #fff; border: none; padding: 10px 16px; border-radius: 20px; font-weight: bold; cursor: pointer; transition: background 0.2s;"
+                onmouseover="this.style.backgroundColor='#3E3E3E'" 
+                onmouseout="this.style.backgroundColor='#242424'">
+            <span style="font-size: 1.2rem; line-height: 1;">+</span>
+            <span>Crear playlist</span>
+        </button>
+
+        <!-- Contenedor donde se insertan las Playlists -->
+        <div id="userPlaylists" style="display: flex; flex-direction: column; gap: 8px; margin-top: 10px; overflow-y: auto;">
+            <div style="color: #B3B3B3; font-size: 0.85rem; padding: 4px 8px;">Tus playlists:</div>
+        </div>
+
+        <script>
+            function crearNuevaPlaylist() {
+                const nombre = prompt("Ingresá el nombre de la nueva playlist:");
+                if (!nombre || nombre.trim() === "") return;
+
+                fetch('/api/playlists/crear', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'nombre=' + encodeURIComponent(nombre.trim())
+                })
+                .then(async response => {
+                    if (response.ok) return response.json();
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Error ' + response.status);
+                })
+                .then(playlist => {
+                    // Agregar dinámicamente al sidebar sin recargar la página
+                    const contenedor = document.getElementById('userPlaylists');
+                    if (contenedor) {
+                        const item = document.createElement('div');
+                        item.style.cssText = 'padding: 8px 12px; color: #B3B3B3; font-size: 0.9rem; cursor: pointer; border-radius: 4px; transition: background 0.2s, color 0.2s;';
+                        item.innerText = playlist.nombre;
+
+                        item.onmouseover = () => { item.style.backgroundColor = '#1A1A1A'; item.style.color = '#fff'; };
+                        item.onmouseout = () => { item.style.backgroundColor = 'transparent'; item.style.color = '#B3B3B3'; };
+
+                        contenedor.appendChild(item);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al crear playlist:", error);
+                    alert('No se pudo crear la playlist: ' + error.message);
+                });
+            }
+
+            // Opcional: Carga inicial de las playlists existentes al abrir/refrescar la página
+            function cargarPlaylistsSidebar() {
+                fetch('/api/playlists/listar')
+                    .then(res => res.json())
+                    .then(playlists => {
+                        const contenedor = document.getElementById('userPlaylists');
+                        if (!contenedor) return;
+                        
+                        contenedor.innerHTML = '<div style="color: #B3B3B3; font-size: 0.85rem; padding: 4px 8px;">Tus playlists:</div>';
+
+                        playlists.forEach(playlist => {
+                            const item = document.createElement('div');
+                            item.style.cssText = 'padding: 8px 12px; color: #B3B3B3; font-size: 0.9rem; cursor: pointer; border-radius: 4px; transition: background 0.2s, color 0.2s;';
+                            item.innerText = playlist.nombre;
+
+                            item.onmouseover = () => { item.style.backgroundColor = '#1A1A1A'; item.style.color = '#fff'; };
+                            item.onmouseout = () => { item.style.backgroundColor = 'transparent'; item.style.color = '#B3B3B3'; };
+
+                            contenedor.appendChild(item);
+                        });
+                    })
+                    .catch(() => {});
+            }
+
+            document.addEventListener('DOMContentLoaded', cargarPlaylistsSidebar);
+        </script>
+    </aside>
+
+</body>
+</html>

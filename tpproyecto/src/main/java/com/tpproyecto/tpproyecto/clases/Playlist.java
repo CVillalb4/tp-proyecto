@@ -1,10 +1,14 @@
 package com.tpproyecto.tpproyecto.clases;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import lombok.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "playlists")
 public class Playlist {
 
@@ -24,6 +28,7 @@ public class Playlist {
             columnNames = {"playlist_id", "cancion_id"}
         )
     )
+    @JsonIgnore
     private List<Cancion> canciones = new ArrayList<>();
 
     public Playlist() {
