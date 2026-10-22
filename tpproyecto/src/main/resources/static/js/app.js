@@ -49,6 +49,18 @@ document.addEventListener('DOMContentLoaded', () => {
             ocultarContextMenu();
         }
     });
+
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.trim();
+            if (query.length > 0) {
+                buscarCanciones(query);
+            } else {
+                ocultarResultadosBusqueda();
+            }
+        });
+    }
 });
 
 // ==========================================
@@ -301,4 +313,22 @@ function agregarCancionAPlaylistEspecifica(playlistId, cancionId) {
         console.error(err);
         alert('Error al agregar la canción.');
     });
+}
+
+function renderizarResultadosBusqueda(canciones) {
+    const contenedor = document.getElementById('resultsDropdown');
+    if (!contenedor) return;
+
+    contenedor.innerHTML = '';
+
+    if (canciones.length === 0) {
+        contenedor.innerHTML = '<div style="padding: 12px; color: #B3B3B3;">No se encontraron canciones</div>';
+    } else {
+        canciones.forEach(cancion => {
+            const row = crearFilaCancion(cancion);
+            contenedor.appendChild(row);
+        });
+    }
+
+    contenedor.style.display = 'block';
 }

@@ -74,5 +74,13 @@ public List<Playlist> obtenerTodas() {
     List<Playlist> lista = playlistRepository.findAll();
     return lista != null ? lista : new ArrayList<>();
 }
+
+public List<Cancion> obtenerCancionesPorPlaylist(Long playlistId) {
+    Playlist playlist = playlistRepository.findById(playlistId).orElse(null);
+    if (playlist != null) {
+        return playlist.getCanciones();
+    }
+    return new ArrayList<>(); // O retornar una lista vacía
+}
     
 }

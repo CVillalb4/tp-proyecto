@@ -1,11 +1,14 @@
 package com.tpproyecto.tpproyecto.controladores;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.tpproyecto.tpproyecto.clases.Cancion;
 import com.tpproyecto.tpproyecto.clases.Playlist;
+import com.tpproyecto.tpproyecto.repositorios.PlaylistRepository;
 import com.tpproyecto.tpproyecto.servicios.PlaylistService;
 
 @RestController
@@ -13,11 +16,9 @@ import com.tpproyecto.tpproyecto.servicios.PlaylistService;
 
 public class PlaylistController {
 
-    private final PlaylistService playlistService;
-
-    public PlaylistController(PlaylistService playlistService) {
-        this.playlistService = playlistService;
-    }
+    @Autowired 
+    private PlaylistService playlistService;
+    private PlaylistRepository playlistRepository;
 
     @PostMapping("/agregar")
     public ResponseEntity<String> agregarCancionAPlaylist(
@@ -53,4 +54,14 @@ public ResponseEntity<?> crearPlaylist(@RequestParam(name = "nombre") String nom
 public ResponseEntity<List<Playlist>> listarPlaylists() {
     return ResponseEntity.ok(playlistService.obtenerTodas());
 }
+
+@GetMapping("/{id}/canciones")
+public ResponseEntity<List<Cancion>> obtenerCancionesDePlaylist(@PathVariable Long id) {
+    Playlist playlist = playlistRepository.findById(id).orElse(null);
+    if (playlist == null) {
+        return ResponseEntity.notFound().build();
+    }
+    return ResponseEntity.ok(playlist.getCanciones());
+}
+
 }
