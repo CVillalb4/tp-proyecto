@@ -53,171 +53,172 @@
 
     </div>
 
-    <script>
-        let timeoutId;
+    
+<script>
+    (function () {
+        // Registrar los eventos globales una sola vez.
+        if (window.topbarEventosRegistrados) return;
+        window.topbarEventosRegistrados = true;
 
-        function buscarEnTiempoReal() {
-            const query = document.getElementById('searchInput').value.trim();
+        window.timeoutBusquedaId = window.timeoutBusquedaId || null;
+
+        let playlistsGlobal = [];
+        let cancionSeleccionadaId = null;
+
+        // Cargar las playlists disponibles.
+        async function cargarPlaylists() {
+            try {
+                const respuesta = await fetch('/api/playlists');
+
+                if (!respuesta.ok) {
+                    throw new Error('No se pudieron cargar las playlists');
+                }
+
+                playlistsGlobal = await respuesta.json();
+            } catch (error) {
+                console.error('Error al cargar playlists:', error);
+                playlistsGlobal = [];
+            }
+        }
+
+        cargarPlaylists();
+
+        // Búsqueda de canciones.
+        window.buscarEnTiempoReal = function () {
+            const input = document.getElementById('searchInput');
             const dropdown = document.getElementById('resultsDropdown');
             const clearBtn = document.getElementById('clearBtn');
 
-            clearBtn.style.display = query.length > 0 ? 'block' : 'none';
+            if (!input || !dropdown) return;
 
-            if (query.length === 0) {
+            const query = input.value.trim();
+
+            if (clearBtn) {
+                clearBtn.style.display = query ? 'block' : 'none';
+            }
+
+            clearTimeout(window.timeoutBusquedaId);
+
+            if (!query) {
                 dropdown.style.display = 'none';
                 dropdown.innerHTML = '';
                 return;
             }
 
-            clearTimeout(timeoutId);
+            window.timeoutBusquedaId = setTimeout(async () => {
+                // Evitar usar elementos antiguos si Turbo navegó.
+                const inputActual = document.getElementById('searchInput');
+                const dropdownActual = document.getElementById('resultsDropdown');
 
-            timeoutId = setTimeout(() => {
-                fetch('/api/canciones/buscar?query=' + encodeURIComponent(query))
-                    .then(response => response.json())
-                    .then(canciones => {
-                        dropdown.innerHTML = '';
+                if (!inputActual || !dropdownActual) return;
+                if (inputActual.value.trim() !== query) return;
 
-                        if (canciones.length === 0) {
-                            dropdown.innerHTML =
-                                '<div style="padding:14px;color:#B3B3B3;font-size:0.85rem;">No se encontraron resultados</div>';
-                        } else {
-                            canciones.forEach(cancion => {
-                                const item = document.createElement('div');
-                                
-                                item.className = 'resultado-busqueda-item';
-                                item.dataset.cancionId = cancion.id;
-                                item.dataset.cancionNombre = cancion.nombre || '';
+                try {
+                    const respuesta = await fetch(
+                        '/api/canciones/buscar?query=' + encodeURIComponent(query)
+                    );
 
-                                item.style.cssText =
-                                    'display:flex;align-items:center;padding:10px 14px;cursor:pointer;border-bottom:1px solid #242424;transition:background 0.2s;';
+                    if (!respuesta.ok) {
+                        throw new Error('Error al buscar canciones');
+                    }
 
-                                item.onmouseover = () =>
-                                    item.style.backgroundColor = '#282828';
+                    const canciones = await respuesta.json();
+                    dropdownActual.innerHTML = '';
 
-                                item.onmouseout = () =>
-                                    item.style.backgroundColor = 'transparent';
+                    if (canciones.length === 0) {
+                        dropdownActual.innerHTML =
+                            '<div style="padding:14px;color:#B3B3B3;font-size:0.85rem;">No se encontraron resultados</div>';
+                    } else {
+                        canciones.forEach(cancion => {
+                            const item = document.createElement('div');
+                            item.className = 'resultado-busqueda-item';
+                            item.dataset.cancionId = cancion.id;
+                            item.dataset.cancionNombre = cancion.nombre || '';
+                            item.style.cssText =
+                                'display:flex;align-items:center;padding:10px 14px;cursor:pointer;border-bottom:1px solid #242424;';
 
-                                const datos = document.createElement('div');
-                                datos.style.cssText =
-                                    'display:flex;flex-direction:column;min-width:0;';
+                            const datos = document.createElement('div');
+                            datos.style.cssText =
+                                'display:flex;flex-direction:column;min-width:0;';
 
-                                const nombre = document.createElement('span');
-                                nombre.textContent = cancion.nombre;
-                                nombre.style.cssText =
-                                    'color:#fff;font-size:0.9rem;font-weight:500;';
+                            const nombre = document.createElement('span');
+                            nombre.textContent = cancion.nombre || '';
+                            nombre.style.cssText =
+                                'color:#fff;font-size:0.9rem;font-weight:500;';
 
-                                const artista = document.createElement('span');
-                                artista.textContent = cancion.artista || '';
-                                artista.style.cssText =
-                                    'color:#B3B3B3;font-size:0.75rem;';
+                            const artista = document.createElement('span');
+                            artista.textContent = cancion.artista || '';
+                            artista.style.cssText =
+                                'color:#B3B3B3;font-size:0.75rem;';
 
-                                datos.appendChild(nombre);
-                                datos.appendChild(artista);
-                                item.appendChild(datos);
-                                dropdown.appendChild(item);
-                            });
-                        }
+                            datos.append(nombre, artista);
+                            item.appendChild(datos);
+                            dropdownActual.appendChild(item);
+                        });
+                    }
 
-                        dropdown.style.display = 'block';
-                    })
-                    .catch(error => {
-                        console.error('Error al buscar canciones:', error);
-                        dropdown.style.display = 'none';
-                    });
+                    dropdownActual.style.display = 'block';
+                } catch (error) {
+                    console.error('Error al buscar canciones:', error);
+                }
             }, 200);
-        }
+        };
 
-        function limpiarBuscador() {
+        // Limpiar búsqueda.
+        window.limpiarBuscador = function () {
             const input = document.getElementById('searchInput');
             const dropdown = document.getElementById('resultsDropdown');
             const clearBtn = document.getElementById('clearBtn');
 
-            input.value = '';
-            dropdown.style.display = 'none';
-            dropdown.innerHTML = '';
-            clearBtn.style.display = 'none';
-            input.focus();
-        }
+            if (input) {
+                input.value = '';
+                input.focus();
+            }
 
-        document.addEventListener('click', function(e) {
-            const searchBox = document.getElementById('searchForm');
+            if (dropdown) {
+                dropdown.style.display = 'none';
+                dropdown.innerHTML = '';
+            }
+
+            if (clearBtn) clearBtn.style.display = 'none';
+
+            clearTimeout(window.timeoutBusquedaId);
+        };
+
+        // Abrir el menú al hacer clic derecho en una sugerencia.
+        document.addEventListener('contextmenu', async function (event) {
+            const item = event.target.closest('.resultado-busqueda-item');
             const dropdown = document.getElementById('resultsDropdown');
 
-            if (searchBox && !searchBox.contains(e.target)) {
-                dropdown.style.display = 'none';
-            }
-        });
-
-        const menuPlaylistsGlobal = document.getElementById('menuPlaylistsGlobal');
-        const opcionesPlaylistsGlobal = document.getElementById('opcionesPlaylistsGlobal');
-
-        let playlistsGlobal = [];
-        let cancionSeleccionadaId = null;
-
-        fetch('/api/playlists')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('No se pudieron cargar las playlists');
-                }
-                return response.json();
-            })
-            .then(playlists => {
-                playlistsGlobal = playlists;
-            })
-            .catch(error => {
-                console.error('Error al cargar playlists:', error);
-            });
-
-        document.addEventListener('contextmenu', function(event) {
-            const item = event.target.closest('.resultado-busqueda-item');
-
-            if (!item || !document.getElementById('resultsDropdown').contains(item)) {
-                return;
-            }
+            if (!item || !dropdown || !dropdown.contains(item)) return;
 
             event.preventDefault();
 
+            const menu = document.getElementById('menuPlaylistsGlobal');
+            const opciones = document.getElementById('opcionesPlaylistsGlobal');
+
+            if (!menu || !opciones) {
+                console.error('No se encontró el menú de playlists en el DOM.');
+                return;
+            }
+
             cancionSeleccionadaId = item.dataset.cancionId;
-            opcionesPlaylistsGlobal.innerHTML = '';
+            opciones.innerHTML = '';
+
+            // Si la carga inicial aún no terminó, intentarlo de nuevo.
+            if (playlistsGlobal.length === 0) {
+                await cargarPlaylists();
+            }
 
             if (playlistsGlobal.length === 0) {
                 const mensaje = document.createElement('p');
                 mensaje.textContent = 'No hay playlists disponibles';
-                opcionesPlaylistsGlobal.appendChild(mensaje);
+                opciones.appendChild(mensaje);
             } else {
                 playlistsGlobal.forEach(playlist => {
                     const form = document.createElement('form');
                     form.method = 'post';
                     form.action = '/api/playlists/agregar-cancion';
-
-                    form.addEventListener('submit', async function(event) {
-                    event.preventDefault();
-
-                    const botonEnviar = form.querySelector('button');
-                    botonEnviar.disabled = true;
-
-                    try {
-                        const respuesta = await fetch(form.action, {
-                            method: 'POST',
-                            body: new URLSearchParams(new FormData(form))
-                        });
-
-                        const mensaje = await respuesta.text();
-
-                        if (!respuesta.ok) {
-                            alert(mensaje || 'No se pudo agregar la canción.');
-                            return;
-                        }
-
-                        menuPlaylistsGlobal.hidden = true;
-                        alert(mensaje);
-                    } catch (error) {
-                        console.error('Error al agregar la canción:', error);
-                        alert('No se pudo conectar con el servidor.');
-                    } finally {
-                        botonEnviar.disabled = false;
-                    }
-                });
 
                     const playlistId = document.createElement('input');
                     playlistId.type = 'hidden';
@@ -233,24 +234,23 @@
                     boton.type = 'submit';
                     boton.textContent = playlist.nombre;
 
-                    form.appendChild(playlistId);
-                    form.appendChild(cancionId);
-                    form.appendChild(boton);
-
-                    opcionesPlaylistsGlobal.appendChild(form);
+                    form.append(playlistId, cancionId, boton);
+                    opciones.appendChild(form);
                 });
             }
 
-            menuPlaylistsGlobal.hidden = false;
-            menuPlaylistsGlobal.style.position = 'fixed';
-            menuPlaylistsGlobal.style.margin = '0';
-            menuPlaylistsGlobal.style.transform = 'none';
+            menu.hidden = false;
+            menu.style.display = 'block';
+            menu.style.position = 'fixed';
+            menu.style.margin = '0';
+            menu.style.transform = 'none';
+            menu.style.zIndex = '99999';
 
+            // Calcular la posición después de generar las opciones.
             const margen = 8;
             const separacion = 4;
-
-            const ancho = menuPlaylistsGlobal.offsetWidth;
-            const alto = menuPlaylistsGlobal.offsetHeight;
+            const ancho = menu.offsetWidth;
+            const alto = menu.offsetHeight;
 
             let x = event.clientX + separacion;
             let y = event.clientY + separacion;
@@ -263,23 +263,84 @@
                 y = event.clientY - alto - separacion;
             }
 
-            menuPlaylistsGlobal.style.left = Math.max(margen, x) + 'px';
-            menuPlaylistsGlobal.style.top = Math.max(margen, y) + 'px';
+            menu.style.left = Math.max(margen, x) + 'px';
+            menu.style.top = Math.max(margen, y) + 'px';
         });
 
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('#menuPlaylistsGlobal')) {
-                menuPlaylistsGlobal.hidden = true;
+        // Agregar canción a la playlist elegida.
+        document.addEventListener('submit', async function (event) {
+            const form = event.target;
+
+            if (
+                !(form instanceof HTMLFormElement) ||
+                form.action !== new URL('/api/playlists/agregar-cancion', location.origin).href
+            ) {
+                return;
+            }
+
+            event.preventDefault();
+
+            const menu = document.getElementById('menuPlaylistsGlobal');
+            const boton = form.querySelector('button');
+
+            if (boton) boton.disabled = true;
+
+            try {
+                const respuesta = await fetch(form.action, {
+                    method: 'POST',
+                    body: new URLSearchParams(new FormData(form))
+                });
+
+                const mensaje = await respuesta.text();
+
+                if (!respuesta.ok) {
+                    alert(mensaje || 'No se pudo agregar la canción.');
+                    return;
+                }
+
+                if (menu) {
+                    menu.hidden = true;
+                    menu.style.display = 'none';
+                }
+
+                alert(mensaje);
+            } catch (error) {
+                console.error('Error al agregar la canción:', error);
+                alert('No se pudo conectar con el servidor.');
+            } finally {
+                if (boton) boton.disabled = false;
             }
         });
 
-        document.addEventListener('keydown', function(event) {
+        // Cerrar sugerencias y menú al hacer clic fuera.
+        document.addEventListener('click', function (event) {
+            const searchBox = document.getElementById('searchForm');
+            const dropdown = document.getElementById('resultsDropdown');
+            const menu = document.getElementById('menuPlaylistsGlobal');
+
+            if (searchBox && !searchBox.contains(event.target) && dropdown) {
+                dropdown.style.display = 'none';
+            }
+
+            if (menu && !event.target.closest('#menuPlaylistsGlobal')) {
+                menu.hidden = true;
+                menu.style.display = 'none';
+            }
+        });
+
+        document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') {
-                menuPlaylistsGlobal.hidden = true;
+                const menu = document.getElementById('menuPlaylistsGlobal');
+
+                if (menu) {
+                    menu.hidden = true;
+                    menu.style.display = 'none';
+                }
             }
         });
+    })();
+</script>
 
-    </script>
 
 </header>
 
