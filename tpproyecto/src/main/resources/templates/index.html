@@ -1,8 +1,11 @@
+
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Spotify Clone</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicApp</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
     <div th:replace="~{topbar :: topbar}"></div>
@@ -156,18 +159,13 @@
 
         </section>
 
-    <!-- 2. Barra Superior (TopBar / Buscador) -->
-    <div th:replace="~{fragments/topbar :: topbar}"></div>
 
-    <!-- 3. Contenido Principal -->
-    <main style="margin-left: 240px; margin-top: 60px; padding: 30px; width: calc(100% - 240px);">
-        <h2>Bienvenido a tu música</h2>
-        <p style="color: #B3B3B3;">Explorá tus playlists o buscá canciones en la barra superior.</p>
     </main>
 
-    <!-- 4. Menú Contextual (Clic derecho) -->
-    <div th:replace="~{fragments/context-menu :: contextMenu}"></div>
+    <footer class="pie">
+        <p>Spotify · Proyecto de software</p>
+    </footer>
 
-<script src="/js/app.js"></script>
+    <script th:src="@{/js/reproductor.js}"></script>
 </body>
 </html>
