@@ -2,6 +2,7 @@ package com.tpproyecto.tpproyecto.controladores;
 
 import com.tpproyecto.tpproyecto.clases.Cancion;
 import com.tpproyecto.tpproyecto.servicios.CancionService;
+import com.tpproyecto.tpproyecto.servicios.PlaylistService;
 
 import com.tpproyecto.tpproyecto.servicios.FavoritoService;
 import java.util.Set;
@@ -23,10 +24,12 @@ public class HomeController {
 
     private final CancionService cancionService;
     private final FavoritoService favoritoService;
+    private final PlaylistService playlistService;
 
-    public HomeController(CancionService cancionService, FavoritoService favoritoService) {
+    public HomeController(CancionService cancionService, FavoritoService favoritoService, PlaylistService playlistService) {
         this.cancionService = cancionService;
         this.favoritoService = favoritoService;
+        this.playlistService = playlistService;
     }
 
    @GetMapping("/")
@@ -49,7 +52,25 @@ public class HomeController {
                         .toList()
         );
 
+        //model.addAttribute("playlists", playlistService.listarPlaylists());
+
         return "index";
+    }
+
+
+    @GetMapping("/biblioteca/favoritos")
+    public String mostrarFavoritos(Model model) {
+        model.addAttribute(
+                "canciones",
+                favoritoService.listarCancionesFavoritas());
+
+        return "favoritos";
+    }
+
+    @GetMapping("/agregar-cancion")
+    public String mostrarFormularioCancion(Model model) {
+        model.addAttribute("nuevaCancion", new Cancion());
+        return "agregar-cancion";
     }
 
     @PostMapping("/canciones")
@@ -98,6 +119,15 @@ public class HomeController {
         }
 
         return "redirect:/";
+    }
+
+    @GetMapping("/biblioteca")
+    public String mostrarBiblioteca(Model model) {
+        // Podés agregar datos necesarios para tu vista de biblioteca si lo requieres, 
+        // por ejemplo, listar todas las canciones o playlists:
+        model.addAttribute("canciones", cancionService.listarCanciones());
+        
+        return "biblioteca"; // Esto busca el archivo biblioteca.html
     }
 
 }

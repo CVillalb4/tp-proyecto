@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (menuBtn) {
         menuBtn.addEventListener('mouseenter', () => {
-            console.log("-> Evento mouseenter detectado en 'Agregar a la playlist'");
             mostrarSubmenuPlaylists();
         });
 
@@ -50,15 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // BÚSQUEDA EN TIEMPO REAL (Unificada correctamente aquí)
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const query = e.target.value.trim();
-            if (query.length > 0) {
-                buscarCanciones(query);
-            } else {
-                ocultarResultadosBusqueda();
-            }
+        searchInput.addEventListener('input', () => {
+            buscarEnTiempoReal(); // Llama directamente a tu función de búsqueda con debounce
         });
     }
 });

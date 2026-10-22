@@ -50,10 +50,10 @@ public ResponseEntity<?> crearPlaylist(@RequestParam(name = "nombre") String nom
     return ResponseEntity.ok(nueva);
 }
 
-@GetMapping("/listar")
-public ResponseEntity<List<Playlist>> listarPlaylists() {
-    return ResponseEntity.ok(playlistService.obtenerTodas());
-}
+@GetMapping({"", "/listar"})
+    public ResponseEntity<List<Playlist>> listarPlaylists() {
+        return ResponseEntity.ok(playlistService.obtenerTodas());
+    }
 
 @GetMapping("/{id}/canciones")
 public ResponseEntity<List<Cancion>> obtenerCancionesDePlaylist(@PathVariable Long id) {

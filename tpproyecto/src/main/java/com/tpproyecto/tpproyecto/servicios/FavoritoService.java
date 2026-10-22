@@ -46,4 +46,13 @@ public class FavoritoService {
     public boolean esFavorito(Long cancionId) {
         return favoritoRepository.existsByCancionId(cancionId);
     }
+
+    @Transactional(readOnly = true)
+    public java.util.List<Cancion> listarCancionesFavoritas() {
+        return favoritoRepository.findAll()
+                .stream()
+                .map(Favorito::getCancion)
+                .toList();
+    }
+
 }
