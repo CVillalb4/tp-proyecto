@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlist</title>
+    <script src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.12/dist/turbo.es2017-umd.js"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{topbar :: topbar}"></div>
+
+    <main class="contenido">
+
+        <a th:href="@{/biblioteca}">← Volver a la biblioteca</a>
+
+        <section class="seccion-musica">
+            <h2 th:text="${playlist.nombre}">Nombre de playlist</h2>
+
+            <p th:if="${mensaje}" th:text="${mensaje}"></p>
+            <p th:if="${error}" th:text="${error}" class="mensaje-error"></p>
+
+            <p th:if="${#lists.isEmpty(playlist.canciones)}">
+                Esta playlist todavía no tiene canciones.
+            </p>
+
+            <div class="lista-playlist"
+                 th:if="${!#lists.isEmpty(playlist.canciones)}">
+
+                <article class="cancion"
+                         th:each="cancion : ${playlist.canciones}">
+
+                    <div class="nombre-cancion">
+                        <h4 th:text="${cancion.nombre}">Nombre de canción</h4>
+                    </div>
+
+                    <div class="nombre-artista">
+                        <p th:text="${cancion.artista}">Artista</p>
+                    </div>
+
+                    <div class="acciones-cancion">
+
+                        <button type="button"
+                                class="seleccionar-cancion"
+                                th:data-nombre="${cancion.nombre}"
+                                th:data-artista="${cancion.artista}"
+                                th:data-audio="${cancion.rutaArchivo}">
+                            ▶
+                        </button>
+
+                        <form th:action="@{/biblioteca/playlist/{playlistId}/quitar-cancion(playlistId=${playlist.id})}"
+                              method="post"
+                              onsubmit="return confirm('¿Querés quitar esta canción de la playlist?');">
+
+                            <input type="hidden"
+                                   name="cancionId"
+                                   th:value="${cancion.id}">
+
+                            <button type="submit">
+                                Quitar de playlist
+                            </button>
+                        </form>
+
+                    </div>
+
+                </article>
+            </div>
+        </section>
+
+        <div th:replace="~{reproductor :: reproductor}"></div>
+    </main>
+
+</body>
+</html>

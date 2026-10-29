@@ -1,0 +1,71 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar canción</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <div th:replace="~{topbar :: topbar}"></div>
+
+    <main class="contenido">
+        <section class="seccion-musica">
+            <h2>Agregar una canción</h2>
+            <p>Completá los datos y seleccioná el archivo MP3.</p>
+
+            <p th:if="${mensaje}" th:text="${mensaje}"></p>
+            <p th:if="${error}" th:text="${error}" class="mensaje-error"></p>
+
+            <form th:action="@{/canciones}"
+                  th:object="${nuevaCancion}"
+                  method="post"
+                  enctype="multipart/form-data"
+                  class="formulario-cancion">
+
+                <label for="nombre">Nombre de la canción</label>
+                <input id="nombre"
+                       type="text"
+                       th:field="*{nombre}"
+                       maxlength="150"
+                       required>
+
+                <label for="artista">Artista</label>
+                <input id="artista"
+                       type="text"
+                       th:field="*{artista}"
+                       maxlength="150"
+                       required>
+
+                <label for="album">Álbum</label>
+                <input id="album"
+                       type="text"
+                       th:field="*{album}"
+                       maxlength="150">
+
+                <label for="archivo">Archivo de audio MP3</label>
+                <input id="archivo"
+                       type="file"
+                       name="archivo"
+                       accept=".mp3,audio/mpeg"
+                       required>
+
+                <label for="duracionSegundos">Duración en segundos</label>
+                <input id="duracionSegundos"
+                       type="number"
+                       th:field="*{duracionSegundos}"
+                       min="1">
+
+                <button type="submit">Guardar canción</button>
+            </form>
+
+            <p><a th:href="@{/}">Volver a la biblioteca</a></p>
+        </section>
+    </main>
+
+    <footer class="pie">
+        <p>MusicApp · Proyecto de software</p>
+    </footer>
+</body>
+</html>
