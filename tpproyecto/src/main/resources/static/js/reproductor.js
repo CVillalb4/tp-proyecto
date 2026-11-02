@@ -20,11 +20,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const duracionTotal = document.getElementById("duracion-total");
     const iconoReproducir = document.getElementById("icono-reproducir");
 
-    const botonesCanciones = [
-        ...document.querySelectorAll(".seleccionar-cancion")
-    ];
+    let botonesCanciones = [];
 
     let indiceActual = -1;
+
+    function actualizarListaCanciones() {
+        botonesCanciones = [
+            ...document.querySelectorAll(".seleccionar-cancion")
+        ];
+
+        // Si la canción actual también está en la página nueva,
+        // conservamos su posición en la lista.
+        indiceActual = botonesCanciones.findIndex(boton => {
+            const ruta = boton.dataset.audio;
+
+            if (!ruta || !audio.currentSrc) {
+                return false;
+            }
+
+            return new URL(ruta, document.baseURI).href === audio.currentSrc;
+        });
+    }
 
     function formatoTiempo(segundos) {
         if (!Number.isFinite(segundos)) {
@@ -160,10 +176,18 @@ document.addEventListener("DOMContentLoaded", () => {
         actualizarBotonReproducir();
     });
 
-    botonesCanciones.forEach((boton, indice) => {
-        boton.addEventListener("click", () => {
+    document.addEventListener("click", evento => {
+        const boton = evento.target.closest(".seleccionar-cancion");
+
+        if (!boton) {
+            return;
+        }
+
+        const indice = botonesCanciones.indexOf(boton);
+
+        if (indice !== -1) {
             seleccionarCancion(indice);
-        });
+        }
     });
 
 
@@ -246,5 +270,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     actualizarIconoVolumen();
+
+    actualizarListaCanciones();
+
+    document.addEventListener("turbo:load", actualizarListaCanciones);
 
 });

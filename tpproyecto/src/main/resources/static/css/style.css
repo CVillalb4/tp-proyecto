@@ -398,6 +398,78 @@ input:focus-visible {
     transform: scale(1.06);
 }
 
+
+/* Contenedor de los botones de canción */
+.agregar-a-playlist {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Botón + para agregar a una playlist */
+.boton-agregar-playlist {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid #454545;
+    border-radius: 50%;
+    background: #303030;
+    color: var(--verde);
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.boton-agregar-playlist:hover {
+    background: #3a3a3a;
+    transform: scale(1.06);
+}
+
+/* Menú desplegable de playlists */
+.opciones-playlist {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 100;
+    min-width: 180px;
+    max-width: 240px;
+    padding: 6px;
+    border: 1px solid #454545;
+    border-radius: 8px;
+    background: #242424;
+    box-shadow: 0 8px 20px rgb(0 0 0 / 35%);
+}
+
+.opciones-playlist[hidden] {
+    display: none;
+}
+
+.opciones-playlist form {
+    margin: 0;
+}
+
+.opciones-playlist button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background: transparent;
+    color: white;
+    text-align: left;
+    cursor: pointer;
+}
+
+.opciones-playlist button:hover {
+    background: #383838;
+}
+
+
+
 /* =========================
    REPRODUCTOR
    ========================= */
@@ -702,4 +774,432 @@ input:focus-visible {
     border-radius: 50%;
     background: #1ed760;
     border: none;
+}
+
+
+
+/* Resultados de la búsqueda global */
+.resultado-busqueda-item {
+    user-select: none;
+}
+
+/* Menú contextual de playlists */
+.menu-playlists-global {
+    position: fixed;
+    z-index: 2000;
+    min-width: 190px;
+    max-width: 280px;
+    padding: 6px;
+    background: #282828;
+    border: 1px solid #444;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.menu-playlists-global[hidden] {
+    display: none;
+}
+
+.menu-playlists-global > p {
+    margin: 0;
+    padding: 8px 10px;
+    color: #b3b3b3;
+    font-size: 0.8rem;
+}
+
+.menu-playlists-global form {
+    margin: 0;
+}
+
+.menu-playlists-global button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: #fff;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.875rem;
+}
+
+.menu-playlists-global button:hover {
+    background: #3e3e3e;
+}
+
+/* botones de + y me gusta */
+.acciones-cancion {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.acciones-cancion form {
+    margin: 0;
+}
+
+
+
+/* Lista vertical de canciones */
+.lista-playlist {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+/* Cada canción ocupa una fila con cuatro columnas */
+.lista-playlist .cancion {
+    display: grid;
+    grid-template-columns: minmax(180px, 1.5fr)
+                           minmax(140px, 1fr)
+                           auto
+                           auto;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    transition: background 0.2s ease;
+}
+
+.lista-playlist .cancion:hover {
+    background: #2a2a2a;
+}
+
+/* Primera columna: canción */
+.lista-playlist .nombre-cancion {
+    min-width: 0;
+}
+
+.lista-playlist .nombre-cancion h4 {
+    margin: 0;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 500;
+    overflow-wrap: anywhere;
+}
+
+/* Segunda columna: artista */
+.lista-playlist .nombre-artista {
+    min-width: 0;
+}
+
+.lista-playlist .nombre-artista p {
+    margin: 0;
+    color: #b3b3b3;
+    font-size: 0.875rem;
+    overflow-wrap: anywhere;
+}
+
+/* Tercera y cuarta columnas: botones */
+.lista-playlist .acciones-cancion {
+    display: contents;
+}
+
+.lista-playlist .acciones-cancion > button,
+.lista-playlist .acciones-cancion > form {
+    justify-self: end;
+}
+
+.lista-playlist .acciones-cancion form {
+    margin: 0;
+}
+
+.lista-playlist .acciones-cancion button {
+    cursor: pointer;
+}
+
+/* Adaptación para pantallas pequeñas */
+@media (max-width: 650px) {
+    .lista-playlist .cancion {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .lista-playlist .acciones-cancion {
+        display: flex;
+        grid-column: 1 / -1;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+}
+
+
+
+/* REPRODUCTOR NUEVO que se queda fijo como el de inicio */
+.reproductor {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 1000;
+    background: #181818;
+    padding: 12px 24px;
+    border-top: 1px solid #333;
+}
+
+body {
+    padding-bottom: 180px;
+}
+
+
+
+/* ===== Biblioteca: encabezado ===== */
+
+.biblioteca-playlists {
+    padding-bottom: 30px;
+}
+
+.encabezado-biblioteca {
+    margin-bottom: 24px;
+}
+
+.etiqueta-seccion {
+    margin: 0 0 6px;
+    color: #1ed760;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.encabezado-biblioteca h3 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(1.7rem, 3vw, 2.3rem);
+    font-weight: 750;
+}
+
+.subtitulo-biblioteca {
+    margin: 8px 0 0;
+    color: #b3b3b3;
+    font-size: 0.95rem;
+}
+
+/* ===== Rejilla de tarjetas ===== */
+
+.rejilla-playlists {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 18px;
+    align-items: stretch;
+}
+
+.tarjeta-playlist {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 18px;
+    box-sizing: border-box;
+    overflow: hidden;
+    border: 1px solid #303030;
+    border-radius: 12px;
+    background: #202020;
+    color: #fff;
+    text-decoration: none;
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.tarjeta-playlist:hover {
+    background: #2b2b2b;
+    border-color: #484848;
+    transform: translateY(-3px);
+}
+
+/* ===== Tarjeta de Favoritos ===== */
+
+.tarjeta-favoritos {
+    justify-content: space-between;
+    min-height: 230px;
+    border-color: transparent;
+    background: linear-gradient(135deg, #1ed760 0%, #16883e 100%);
+}
+
+.tarjeta-favoritos:hover {
+    background: linear-gradient(135deg, #39ed78 0%, #1b9d4b 100%);
+    border-color: transparent;
+}
+
+.icono-playlist {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 62px;
+    height: 62px;
+    flex-shrink: 0;
+    border-radius: 9px;
+}
+
+.icono-playlist svg {
+    width: 30px;
+    height: 30px;
+}
+
+.icono-favoritos {
+    color: #fff;
+    background: rgba(0, 0, 0, 0.17);
+}
+
+.tarjeta-favoritos .contenido-tarjeta-playlist h4 {
+    color: #fff;
+    font-size: 1.4rem;
+}
+
+.tarjeta-favoritos .contenido-tarjeta-playlist p {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ===== Tarjetas de playlists personales ===== */
+
+.icono-personalizado {
+    margin-bottom: 18px;
+    color: #1ed760;
+    background: #303030;
+}
+
+.contenido-tarjeta-playlist {
+    min-width: 0;
+    margin-top: auto;
+    padding-top: 18px;
+}
+
+.contenido-tarjeta-playlist h4 {
+    margin: 0;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.contenido-tarjeta-playlist p {
+    margin: 8px 0 0;
+    color: #b3b3b3;
+    font-size: 0.88rem;
+    line-height: 1.5;
+}
+
+.enlace-tarjeta-playlist {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    color: inherit;
+    text-decoration: none;
+}
+
+.boton-play-tarjeta {
+    position: absolute;
+    right: 16px;
+    bottom: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #1ed760;
+    color: #111;
+    font-size: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.tarjeta-playlist:hover .boton-play-tarjeta {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.tarjeta-favoritos .boton-play-tarjeta {
+    bottom: 18px;
+    color: #16883e;
+    background: #fff;
+}
+
+/* ===== Pie y botón de eliminar ===== */
+
+.pie-tarjeta-playlist {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 1px solid #363636;
+}
+
+.pie-tarjeta-playlist form {
+    margin: 0;
+}
+
+.boton-eliminar-playlist {
+    padding: 7px 12px;
+    border: 1px solid #555;
+    border-radius: 20px;
+    background: transparent;
+    color: #b3b3b3;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.boton-eliminar-playlist:hover {
+    color: #ff7777;
+    border-color: #ff7777;
+}
+
+.mensaje-sin-playlists {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 22px;
+    border: 1px dashed #444;
+    border-radius: 10px;
+    color: #b3b3b3;
+    line-height: 1.8;
+}
+
+/* ===== Diseño adaptable ===== */
+
+@media (max-width: 600px) {
+    .rejilla-playlists {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .tarjeta-playlist {
+        padding: 14px;
+    }
+
+    .tarjeta-favoritos {
+        min-height: 210px;
+    }
+
+    .icono-playlist {
+        width: 50px;
+        height: 50px;
+    }
+
+    .contenido-tarjeta-playlist h4 {
+        font-size: 1rem;
+    }
+
+    .boton-play-tarjeta {
+        width: 36px;
+        height: 36px;
+        right: 10px;
+        bottom: 54px;
+    }
+
+    .tarjeta-favoritos .boton-play-tarjeta {
+        bottom: 14px;
+    }
 }

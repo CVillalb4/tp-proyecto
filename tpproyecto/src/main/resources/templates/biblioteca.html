@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca</title>
+    <script src="https://cdn.jsdelivr.net/npm/@hotwired/turbo@8.0.12/dist/turbo.es2017-umd.js"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+    <div th:replace="~{topbar :: topbar}"></div>
+
+    <main class="contenido">
+        <h2>Tu biblioteca</h2>
+
+        <p th:if="${mensaje}" th:text="${mensaje}"></p>
+        <p th:if="${error}" th:text="${error}" class="mensaje-error"></p>
+
+        <section class="seccion-musica">
+            <h3>Crear playlist</h3>
+
+            <form class="formulario-cancion"
+                  th:action="@{/biblioteca/crear}"
+                  method="post">
+
+                <label for="nombre">Nombre de la playlist:</label>
+
+                <input
+                    type="text"
+                    id="nombre"
+                    name="nombre"
+                    maxlength="100"
+                    required
+                    placeholder="Ej.: Rock favorito">
+
+                <button type="submit">Crear playlist</button>
+            </form>
+        </section>
+
+        
+        <section class="seccion-musica biblioteca-playlists">
+            <div class="encabezado-biblioteca">
+                <div>
+                    <p class="etiqueta-seccion">TU COLECCIÓN</p>
+                    <h3>Mis playlists</h3>
+                    <p class="subtitulo-biblioteca">
+                        Tu música, organizada a tu manera.
+                    </p>
+                </div>
+            </div>
+
+            <div class="rejilla-playlists">
+
+                <!-- Tarjeta especial de Favoritos -->
+                <a th:href="@{/biblioteca/favoritos}" class="tarjeta-playlist tarjeta-favoritos">
+
+                    <div class="icono-playlist icono-favoritos">
+                        <svg viewBox="0 0 24 24" aria-hidden="true">
+                            <path
+                                d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8z"
+                                fill="currentColor" />
+                        </svg>
+                    </div>
+
+                    <div class="contenido-tarjeta-playlist">
+                        <h4>Me gusta</h4>
+                        <p>Tus canciones favoritas, en un solo lugar.</p>
+                    </div>
+
+                    <span class="boton-play-tarjeta" aria-hidden="true">▶</span>
+                </a>
+
+                <!-- Mensaje si todavía no hay playlists -->
+                <p class="mensaje-sin-playlists" th:if="${#lists.isEmpty(playlists)}">
+                    Todavía no creaste ninguna playlist.
+                    <br>
+                    Cuando crees una, aparecerá acá.
+                </p>
+
+                <!-- Tarjetas de playlists creadas -->
+                <article class="tarjeta-playlist" th:each="playlist : ${playlists}">
+
+                    <a class="enlace-tarjeta-playlist" th:href="@{/biblioteca/playlist/{id}(id=${playlist.id})}">
+
+                        <div class="icono-playlist icono-personalizado">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M4 6h16M4 12h16M4 18h10" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" />
+                            </svg>
+                        </div>
+
+                        <div class="contenido-tarjeta-playlist">
+                            <h4 th:text="${playlist.nombre}">
+                                Nombre de playlist
+                            </h4>
+
+                            <p>
+                                <span th:text="${playlist.canciones.size()}">0</span>
+                                canciones
+                            </p>
+                        </div>
+
+                        <span class="boton-play-tarjeta" aria-hidden="true">▶</span>
+                    </a>
+
+                    <div class="pie-tarjeta-playlist">
+                        <form th:action="@{/biblioteca/eliminar/{id}(id=${playlist.id})}" method="post"
+                            onsubmit="return confirm('¿Querés eliminar esta playlist?');">
+
+                            <button type="submit" class="boton-eliminar-playlist">
+                                Eliminar
+                            </button>
+                        </form>
+                    </div>
+
+                </article>
+
+            </div>
+        </section>
+
+
+        <div th:replace="~{reproductor :: reproductor}"></div>
+    </main>
+
+</body>
+</html>
